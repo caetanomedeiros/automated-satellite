@@ -12,8 +12,7 @@
   - name: check for updates
     yum:
       name: '*'
-      state: latest
-      exclude: kernel*
+      state: latest      
     check_mode: "{{ check_only }}"
     throttle: 1
     register: updates
@@ -29,3 +28,8 @@
     loop_control:
       label: "{{ item[0] }}"
     when: updates.changes is defined
+
+  - name: Reboot when packages were updated
+    ansible.builtin.reboot:
+      msg: "Reboot initiated by Ansible"
+    when: updates.changed is defined
